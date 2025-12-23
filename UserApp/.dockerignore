@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.vscode/
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.log
+*.tmp
+*.bak
+*.suo
+.git/
+.gitignore

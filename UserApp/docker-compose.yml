@@ -1,0 +1,44 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - appnet
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  userapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-app-container
+    depends_on:
+      - sqlserver
+    ports:
+      - "8093:80"
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=UERSDB;User Id=sa;Password=Password123;TrustServerCertificate=True;
+    networks:
+      - appnet
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8087:8080"
+    networks:
+      - appnet
+    depends_on:
+      - sqlserver
+
+networks:
+  appnet:
+
+volumes:
+  sqlserver-data:
